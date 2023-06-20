@@ -27,12 +27,27 @@ async def load():
 async def main():
     async with client:
         await load()
-        await client.start(os.getenv("TOKEN"))
+        await client.start(os.getenv('YOUR_TOKEN'))#put your token here
 
+@client.command()
+async def join(ctx):
+    # Verification process
+    verified = await verify_user(ctx.author)  # Call your verification function
 
+    if verified:
+        # Get the 'contributor' role
+        role = discord.utils.get(ctx.guild.roles, name='contributor')
+
+        if role:
+            await ctx.author.add_roles(role)
+            await ctx.send(f'Congratulations {ctx.author.mention}! You have been awarded the "contributor" role.')
+        else:
+            await ctx.send('The "contributor" role was not found on this server.')
+    else:
+        await ctx.send('Verification failed. You are not eligible to receive the "contributor" role.')
+
+async def verify_user(user):
+    return True
 asyncio.run(main())
-
-
-        
 
 
